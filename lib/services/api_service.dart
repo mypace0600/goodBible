@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:goodbible/enums/bible_title.dart';
 import 'package:goodbible/models/bible_content_model.dart';
+import 'package:goodbible/models/bible_search_model.dart';
 import 'package:goodbible/models/book_data_model.dart';
 
 class ApiService {
@@ -22,5 +24,22 @@ class ApiService {
       bibleContentInstances.add(bibleContentModel);
     }
     return bibleContentInstances;
+  }
+
+  static Future<List<BibleSearchModel>> getBibleData() async {
+    List<BibleSearchModel> searchModelInstances = [];
+    for (String title in BibleTitles.bibleTitles) {
+      String jsonString =
+          await rootBundle.loadString('assets/bible/$title.json');
+      var jsonResponse = jsonDecode(jsonString);
+      BookDataModel bookDataModel = BookDataModel.fromJson(jsonResponse);
+      print(bookDataModel.book);
+      print(bookDataModel.chapters.length);
+      BibleSearchModel searchModel = BibleSearchModel();
+      searchModel.book = bookDataModel.book;
+      searchModel.chapter = bookDataModel.chapters.length;
+      searchModelInstances.add(searchModel);
+    }
+    return searchModelInstances;
   }
 }
