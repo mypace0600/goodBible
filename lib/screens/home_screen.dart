@@ -6,9 +6,13 @@ import 'package:goodbible/widgets/content_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
+  final String book;
+  final int chapter;
   const HomeScreen({
-    super.key,
-  });
+    Key? key,
+    required this.book,
+    required this.chapter,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -16,8 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<BibleContentModel>> contentList;
-  late String book = "요한계시록";
-  late int chapter = 0;
+  late String book;
+  late int chapter;
   late SharedPreferences prefs;
 
   Future initPrefs() async {
@@ -26,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final savedChapter = prefs.getString('savedChapter');
     if (savedBook != null && savedChapter != null) {
       book = savedBook;
-      chapter = savedChapter as int;
+      chapter = int.parse(savedChapter);
       setState(() {});
     } else {
       book = "요한계시록";
@@ -38,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchScreen(),
+        builder: (context) => const SearchScreen(),
       ), // 이동할 페이지의 위젯
     );
   }
@@ -46,6 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    book = widget.book;
+    chapter = widget.chapter;
     initPrefs();
     contentList = ApiService.getVerseListByBookAndChapter(book, chapter);
   }
@@ -100,7 +106,7 @@ ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot) {
     ),
     padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
     scrollDirection: Axis.vertical,
-    itemCount: snapshot.data!.length,
+    itemCount: snapshot.data?.length ?? 0,
     itemBuilder: (context, index) {
       var content = snapshot.data![index];
       return ContentWidget(

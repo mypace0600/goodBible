@@ -3,9 +3,14 @@ import 'package:goodbible/models/bible_search_model.dart';
 import 'package:goodbible/services/api_service.dart';
 import 'package:goodbible/widgets/search_widget.dart';
 
-class SearchScreen extends StatelessWidget {
-  SearchScreen({Key? key}) : super(key: key);
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({Key? key}) : super(key: key);
 
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
   Future<List<BibleSearchModel>> searchList = ApiService.getBibleData();
 
   @override

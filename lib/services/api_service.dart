@@ -33,8 +33,6 @@ class ApiService {
           await rootBundle.loadString('assets/bible/$title.json');
       var jsonResponse = jsonDecode(jsonString);
       BookDataModel bookDataModel = BookDataModel.fromJson(jsonResponse);
-      print(bookDataModel.book);
-      print(bookDataModel.chapters.length);
       BibleSearchModel searchModel = BibleSearchModel();
       searchModel.book = bookDataModel.book;
       searchModel.chapter = bookDataModel.chapters.length;
