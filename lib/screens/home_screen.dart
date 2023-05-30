@@ -95,6 +95,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.bookmark),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.menu),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
