@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goodbible/models/bible_content_model.dart';
 import 'package:goodbible/screens/search_screen.dart';
+import 'package:goodbible/screens/search_text_screen.dart';
 import 'package:goodbible/services/api_service.dart';
 import 'package:goodbible/widgets/content_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,12 +39,21 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  searchAction() {
+  searchAddressAction() {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const SearchScreen(),
       ), // 이동할 페이지의 위젯
+    );
+  }
+
+  searchTextAction() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SearchTextScreen(),
+      ),
     );
   }
 
@@ -63,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: TextButton(
-          onPressed: searchAction,
+          onPressed: searchAddressAction,
           child: Text(
             '$book ${chapter + 1}장',
             style: const TextStyle(
@@ -104,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.bookmark),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: searchTextAction,
               icon: const Icon(Icons.search),
             ),
             IconButton(
