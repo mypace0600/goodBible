@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:goodbible/services/api_service.dart';
 
-class SearchTextScreen extends StatelessWidget {
+class SearchTextScreen extends StatefulWidget {
   const SearchTextScreen({super.key});
+
+  @override
+  State<SearchTextScreen> createState() => _SearchTextScreenState();
+}
+
+class _SearchTextScreenState extends State<SearchTextScreen> {
+  final TextEditingController textEditingController = TextEditingController();
+
+  onSearchText(String text) {
+    Future<List<String>> resultTextList = ApiService.searchTextList(text);
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +39,10 @@ class SearchTextScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: TextField(
-                          decoration: InputDecoration(
+                          controller: textEditingController,
+                          decoration: const InputDecoration(
                             hintText: '검색',
                             border: InputBorder.none,
                           ),
@@ -31,9 +50,7 @@ class SearchTextScreen extends StatelessWidget {
                       ),
                       IconButton(
                         icon: const Icon(Icons.search),
-                        onPressed: () {
-                          // 검색 버튼이 눌렸을 때 실행되는 코드
-                        },
+                        onPressed: onSearchText(textEditingController.text),
                       ),
                     ],
                   ),
@@ -41,9 +58,29 @@ class SearchTextScreen extends StatelessWidget {
               ),
               const SizedBox(
                 width: 20,
-              )
+              ),
             ],
           ),
+        ),
+      ),
+      body: Container(),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.bookmark),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.menu),
+            ),
+          ],
         ),
       ),
     );

@@ -40,4 +40,8 @@ class ApiService {
     }
     return searchModelInstances;
   }
+
+  static Future<List<String>> searchTextList(String text) async {
+    return [];
+  }
 }
