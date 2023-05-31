@@ -2,10 +2,13 @@ import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:goodbible/enums/bible_title.dart';
 import 'package:goodbible/models/bible_content_model.dart';
 import 'package:goodbible/models/bible_search_model.dart';
 import 'package:goodbible/models/book_data_model.dart';
+import 'package:goodbible/models/chapter_data_model.dart';
+import 'package:goodbible/models/verse_data_model.dart';
 
 class ApiService {
   static Future<List<BibleContentModel>> getVerseListByBookAndChapter(
@@ -42,56 +45,36 @@ class ApiService {
     return searchModelInstances;
   }
 
-  static Future<List<String>> searchTextList(String searchText) async {
-    List<String> jsonFileList = [];
-    for(String title in BibleTitles.bibleTitles){
-      String text = 'assets/bible/$title.json';
-      jsonFileList.add(text);
-    }
-    List<ReceivePort> receivePorts = [];
-    List<Isolate> isolates = [];
+  static Future<List<BibleContentModel>> searchTextList(String searchText) async {
 
-    for (String jsonFilePath in jsonFileList) {
-      ReceivePort receivePort = ReceivePort();
-      receivePorts.add(receivePort);
+    List<BookDataModel> bookDataModelList = [];
+    List<Future<BookDataModel>> futures = [];
 
-      Isolate isolate = await Isolate.spawn(
-        jsonSearchIsolate,
-        {'filePath': jsonFilePath, 'searchText': searchText, 'sendPort': receivePort.sendPort},
-      );
-      isolates.add(isolate);
-    }
-    List<dynamic> searchResults = [];
-    for (ReceivePort receivePort in receivePorts) {
-      dynamic result = await receivePort.first;
-      searchResults.addAll(result);
-    }
-    for (var result in searchResults) {
-      // 검색 결과 처리 (예: 출력, 저장 등)
-      print('검색 결과: $result');
+    for (String title in BibleTitles.bibleTitles) {
+      Future<BookDataModel> future = loadBookDataModel(title);
+      futures.add(future);
     }
 
-    for (Isolate isolate in isolates) {
-      isolate.kill();
+    bookDataModelList = await Future.wait(futures);
+
+    for(BookDataModel bookData in bookDataModelList){
+      for(ChapterDataModel chapterData in bookData.chapters){
+        for(VerseDataModel verseData in chapterData.verses){
+          if(verseData.text.contains(searchText)){
+            print('${bookData.book} ${chapterData.chapter} ${verseData.verse} ${verseData.text}');
+          }
+        }
+      }
     }
+
+
     return [];
   }
 
-  static void jsonSearchIsolate(Map<String, dynamic> message) async {
-  String filePath = message['filePath'];
-  String searchText = message['searchText'];
-  SendPort sendPort = message['sendPort'];
-
-  String jsonString = await rootBundle.loadString(filePath);
-  List<dynamic> jsonData = jsonDecode(jsonString);
-
-  List<dynamic> searchResults = [];
-  for (var item in jsonData) {
-    if (item.toString().contains(searchText)) {
-      searchResults.add(item);
-    }
+  static Future<BookDataModel> loadBookDataModel(String title) async {
+    String jsonString = await rootBundle.loadString('assets/bible/$title.json');
+    var jsonResponse = jsonDecode(jsonString);
+    BookDataModel bookDataModel = BookDataModel.fromJson(jsonResponse);
+    return bookDataModel;
   }
-
-  sendPort.send(searchResults);
-}
 }
