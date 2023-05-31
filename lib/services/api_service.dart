@@ -30,7 +30,8 @@ class ApiService {
 
   static Future<List<BibleSearchModel>> getBibleData() async {
     List<BibleSearchModel> searchModelInstances = [];
-    for (String title in BibleTitles.bibleTitles) {
+    for (var map in BibleTitles.bibleTitles) {
+      String? title = map['title'];
       String jsonString =
           await rootBundle.loadString('assets/bible/$title.json');
       var jsonResponse = jsonDecode(jsonString);
@@ -72,7 +73,8 @@ class ApiService {
 
   static Future<List<BookDataModel>> loadAllBookDataModels() async {
     List<Future<BookDataModel>> futures = [];
-    for (String title in BibleTitles.bibleTitles) {
+    for (var map in BibleTitles.bibleTitles) {
+      String? title = map['title'] ?? "";
       Future<BookDataModel> future = loadBookDataModel(title);
       futures.add(future);
     }
@@ -84,5 +86,14 @@ class ApiService {
     var jsonResponse = jsonDecode(jsonString);
     BookDataModel bookDataModel = BookDataModel.fromJson(jsonResponse);
     return bookDataModel;
+  }
+
+  static String getShortByBook(String book) {
+    for (var map in BibleTitles.bibleTitles) {
+      if (map['title'] == book) {
+        return map['abbreviation'] ?? "";
+      }
+    }
+    return "";
   }
 }
