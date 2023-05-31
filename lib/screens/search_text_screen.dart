@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goodbible/models/bible_content_model.dart';
 import 'package:goodbible/services/api_service.dart';
 
 class SearchTextScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
   final TextEditingController textEditingController = TextEditingController();
 
   onSearchText(String text) {
-    Future<List<String>> resultTextList = ApiService.searchTextList(text);
+    Future<List<BibleContentModel>> resultTextList = ApiService.searchTextList(text);
   }
 
   @override
