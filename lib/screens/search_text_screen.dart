@@ -3,17 +3,27 @@ import 'package:goodbible/models/bible_content_model.dart';
 import 'package:goodbible/services/api_service.dart';
 
 class SearchTextScreen extends StatefulWidget {
-  const SearchTextScreen({super.key});
+  final TextEditingController textEditingController;
+  const SearchTextScreen({Key? key, required this.textEditingController})
+      : super(key: key);
 
   @override
   State<SearchTextScreen> createState() => _SearchTextScreenState();
 }
 
 class _SearchTextScreenState extends State<SearchTextScreen> {
-  final TextEditingController textEditingController = TextEditingController();
+  late TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingController = widget.textEditingController;
+  }
 
   onSearchText(String text) {
-    Future<List<BibleContentModel>> resultTextList = ApiService.searchTextList(text);
+    print(text);
+    Future<List<BibleContentModel>> resultTextList =
+        ApiService.searchTextList(text);
   }
 
   @override
@@ -51,7 +61,9 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.search),
-                        onPressed: onSearchText(textEditingController.text),
+                        onPressed: () {
+                          onSearchText(textEditingController.text);
+                        },
                       ),
                     ],
                   ),

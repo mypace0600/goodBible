@@ -20,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController textEditingController = TextEditingController();
   late Future<List<BibleContentModel>> contentList;
   late String book;
   late int chapter;
@@ -52,7 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const SearchTextScreen(),
+        builder: (context) => SearchTextScreen(
+          textEditingController: textEditingController,
+        ),
       ),
     );
   }
