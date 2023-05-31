@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:goodbible/enums/bible_title.dart';
 import 'package:goodbible/models/bible_content_model.dart';
 import 'package:goodbible/models/bible_search_model.dart';
@@ -45,30 +43,40 @@ class ApiService {
     return searchModelInstances;
   }
 
-  static Future<List<BibleContentModel>> searchTextList(String searchText) async {
+  static Future<List<BibleContentModel>> searchTextList(
+      String searchText) async {
+    List<BookDataModel> bookDataModelList = await loadAllBookDataModels();
+    List<BibleContentModel> searchResults = [];
 
-    List<BookDataModel> bookDataModelList = [];
+    await Future.forEach(bookDataModelList, (BookDataModel bookData) async {
+      await Future.forEach(bookData.chapters,
+          (ChapterDataModel chapterData) async {
+        await Future.forEach(chapterData.verses, (VerseDataModel verseData) {
+          if (verseData.text.contains(searchText)) {
+            print(
+                '${bookData.book} ${chapterData.chapter} ${verseData.verse} ${verseData.text}');
+            BibleContentModel bibleContentModel = BibleContentModel(
+              book: bookData.book,
+              chapter: chapterData.chapter,
+              verse: verseData.verse,
+              text: verseData.text,
+            );
+            searchResults.add(bibleContentModel);
+          }
+        });
+      });
+    });
+
+    return searchResults;
+  }
+
+  static Future<List<BookDataModel>> loadAllBookDataModels() async {
     List<Future<BookDataModel>> futures = [];
-
     for (String title in BibleTitles.bibleTitles) {
       Future<BookDataModel> future = loadBookDataModel(title);
       futures.add(future);
     }
-
-    bookDataModelList = await Future.wait(futures);
-
-    for(BookDataModel bookData in bookDataModelList){
-      for(ChapterDataModel chapterData in bookData.chapters){
-        for(VerseDataModel verseData in chapterData.verses){
-          if(verseData.text.contains(searchText)){
-            print('${bookData.book} ${chapterData.chapter} ${verseData.verse} ${verseData.text}');
-          }
-        }
-      }
-    }
-
-
-    return [];
+    return await Future.wait(futures);
   }
 
   static Future<BookDataModel> loadBookDataModel(String title) async {

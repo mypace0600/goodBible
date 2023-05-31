@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goodbible/models/bible_content_model.dart';
 import 'package:goodbible/services/api_service.dart';
+import 'package:goodbible/widgets/search_content_widget.dart';
 
 class SearchTextScreen extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -13,6 +14,7 @@ class SearchTextScreen extends StatefulWidget {
 
 class _SearchTextScreenState extends State<SearchTextScreen> {
   late TextEditingController textEditingController = TextEditingController();
+  late Future<List<BibleContentModel>> resultTextList = Future.value([]);
 
   @override
   void initState() {
@@ -22,8 +24,9 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
 
   onSearchText(String text) {
     print(text);
-    Future<List<BibleContentModel>> resultTextList =
-        ApiService.searchTextList(text);
+    setState(() {
+      resultTextList = ApiService.searchTextList(text);
+    });
   }
 
   @override
@@ -76,7 +79,22 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
           ),
         ),
       ),
-      body: Container(),
+      body: Flex(
+        direction: Axis.vertical,
+        children: [
+          FutureBuilder(
+            future: resultTextList,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: makeList(snapshot),
+                );
+              }
+              return Container();
+            },
+          )
+        ],
+      ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -98,4 +116,23 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
       ),
     );
   }
+}
+
+ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot) {
+  return ListView.separated(
+    separatorBuilder: (context, index) => const SizedBox(
+      height: 10,
+    ),
+    padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+    scrollDirection: Axis.vertical,
+    itemCount: snapshot.data?.length ?? 0,
+    itemBuilder: (context, index) {
+      var content = snapshot.data![index];
+      return SearchContentWidget(
+          book: content.book,
+          chapter: content.chapter,
+          verse: content.verse,
+          text: content.text);
+    },
+  );
 }
