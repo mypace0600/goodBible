@@ -14,12 +14,13 @@ class SearchTextScreen extends StatefulWidget {
 
 class _SearchTextScreenState extends State<SearchTextScreen> {
   late TextEditingController textEditingController = TextEditingController();
-  late Future<List<BibleContentModel>> resultTextList = Future.value([]);
+  late Future<List<BibleContentModel>> resultTextList;
 
   @override
   void initState() {
     super.initState();
-    textEditingController = widget.textEditingController;
+    // textEditingController = widget.textEditingController;
+    resultTextList = Future.value([]);
   }
 
   onSearchText(String text) {
@@ -31,7 +32,7 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
 
   @override
   void dispose() {
-    textEditingController.dispose();
+    // textEditingController.dispose();
     super.dispose();
   }
 
@@ -119,20 +120,23 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
 }
 
 ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot) {
-  return ListView.separated(
-    separatorBuilder: (context, index) => const SizedBox(
-      height: 10,
-    ),
-    padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-    scrollDirection: Axis.vertical,
-    itemCount: snapshot.data?.length ?? 0,
-    itemBuilder: (context, index) {
-      var content = snapshot.data![index];
-      return SearchContentWidget(
-          book: content.book,
-          chapter: content.chapter,
-          verse: content.verse,
-          text: content.text);
-    },
-  );
+  if (snapshot.hasData == true) {
+    return ListView.separated(
+      separatorBuilder: (context, index) => const SizedBox(
+        height: 10,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+      scrollDirection: Axis.vertical,
+      itemCount: snapshot.data?.length ?? 0,
+      itemBuilder: (context, index) {
+        var content = snapshot.data![index];
+        return SearchContentWidget(
+            book: content.book,
+            chapter: content.chapter,
+            verse: content.verse,
+            text: content.text);
+      },
+    );
+  }
+  return ListView();
 }
