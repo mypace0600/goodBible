@@ -88,7 +88,7 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
-                  child: makeList(snapshot),
+                  child: makeList(snapshot, textEditingController.text),
                 );
               }
               return Container();
@@ -119,7 +119,8 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
   }
 }
 
-ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot) {
+ListView makeList(
+    AsyncSnapshot<List<BibleContentModel>> snapshot, String searchText) {
   if (snapshot.hasData == true) {
     return ListView.separated(
       separatorBuilder: (context, index) => const SizedBox(
@@ -131,6 +132,7 @@ ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot) {
       itemBuilder: (context, index) {
         var content = snapshot.data![index];
         return SearchContentWidget(
+            searchText: searchText,
             book: content.book,
             chapter: content.chapter,
             verse: content.verse,

@@ -54,8 +54,6 @@ class ApiService {
           (ChapterDataModel chapterData) async {
         await Future.forEach(chapterData.verses, (VerseDataModel verseData) {
           if (verseData.text.contains(searchText)) {
-            print(
-                '${bookData.book} ${chapterData.chapter} ${verseData.verse} ${verseData.text}');
             BibleContentModel bibleContentModel = BibleContentModel(
               book: bookData.book,
               chapter: chapterData.chapter,
