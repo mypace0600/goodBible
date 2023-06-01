@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goodbible/models/bible_content_model.dart';
+import 'package:goodbible/screens/saved_text_list_screen.dart';
 import 'package:goodbible/screens/search_screen.dart';
 import 'package:goodbible/screens/search_text_screen.dart';
 import 'package:goodbible/services/api_service.dart';
@@ -60,6 +61,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  savedTextList() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SavedTextListScreen(),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -113,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: savedTextList,
               icon: const Icon(Icons.bookmark),
             ),
             IconButton(

@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:goodbible/services/api_service.dart';
 
 class ContentWidget extends StatelessWidget {
   final String book, text;
   final int chapter, verse;
+  final String short;
 
-  const ContentWidget({
-    super.key,
+  ContentWidget({
+    Key? key,
     required this.book,
     required this.chapter,
     required this.verse,
     required this.text,
-  });
+  })  : short = ApiService.getShortByBook(book),
+        super(key: key);
 
   Future<void> saveTextAddressToLocalStorage(
       String book, int chapter, int verse, String text) async {
-    String address = '$book ${chapter + 1} $verse';
+    String address = '$short ${chapter + 1}:$verse';
     print(address);
     const storage = FlutterSecureStorage();
     await storage.write(key: address, value: text);
