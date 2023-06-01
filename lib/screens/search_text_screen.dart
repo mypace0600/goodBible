@@ -96,25 +96,6 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
           )
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.bookmark),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.menu),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
