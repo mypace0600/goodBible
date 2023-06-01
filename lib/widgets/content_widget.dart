@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:goodbible/services/api_service.dart';
 
-class ContentWidget extends StatelessWidget {
+class ContentWidget extends StatefulWidget {
   final String book, text;
   final int chapter, verse;
   final String short;
@@ -16,9 +16,16 @@ class ContentWidget extends StatelessWidget {
   })  : short = ApiService.getShortByBook(book),
         super(key: key);
 
+  @override
+  State<ContentWidget> createState() => _ContentWidgetState();
+}
+
+class _ContentWidgetState extends State<ContentWidget> {
+  bool isSelected = false;
+
   Future<void> saveTextAddressToLocalStorage(
       String book, int chapter, int verse, String text) async {
-    String address = '$short ${chapter + 1}:$verse';
+    String address = '${widget.short} ${chapter + 1}:$verse';
     print(address);
     const storage = FlutterSecureStorage();
     await storage.write(key: address, value: text);
@@ -31,11 +38,25 @@ class ContentWidget extends StatelessWidget {
         Flexible(
           child: GestureDetector(
             onLongPress: () {
-              saveTextAddressToLocalStorage(book, chapter, verse, text);
+              setState(() {
+                isSelected = true;
+              });
+              saveTextAddressToLocalStorage(
+                  widget.book, widget.chapter, widget.verse, widget.text);
             },
-            child: Text(
-              ':$verse $text',
-              softWrap: true,
+            onLongPressEnd: (_) {
+              setState(() {
+                isSelected = false;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.blue : Colors.transparent,
+              ),
+              child: Text(
+                ':${widget.verse} ${widget.text}',
+                softWrap: true,
+              ),
             ),
           ),
         ),
