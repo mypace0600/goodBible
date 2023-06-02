@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SavedTextListScreen extends StatefulWidget {
-  const SavedTextListScreen({super.key});
+  final String fileKey;
+  const SavedTextListScreen({super.key,required this.fileKey,});
 
   @override
   State<SavedTextListScreen> createState() => _SavedTextListScreenState();
@@ -19,7 +20,14 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
 
   Future<Map<String, String>> getAllSavedData() async {
     const storage = FlutterSecureStorage();
-    return await storage.readAll();
+    final allData = await storage.readAll();
+    final filteredData = <String, String>{};
+    allData.forEach((key, value) {
+      if (key.contains(widget.fileKey)) {
+        filteredData[key] = value;
+      }
+    });
+    return filteredData;
   }
 
   Future<void> deleteSavedData(String key) async {
@@ -34,7 +42,7 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved Text List'),
+        title: Text(widget.fileKey),
       ),
       body: FutureBuilder<Map<String, String>>(
         future: savedList,

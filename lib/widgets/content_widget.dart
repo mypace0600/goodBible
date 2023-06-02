@@ -26,10 +26,10 @@ class _ContentWidgetState extends State<ContentWidget> {
 
   Future<void> saveTextAddressToLocalStorage(
       String book, int chapter, int verse, String text) async {
-    String address = '${widget.short} ${chapter + 1}:$verse';
-    print(address);
+    String selectedText = '${widget.short} ${chapter + 1}:$verse $text';
+    print(selectedText);
     const storage = FlutterSecureStorage();
-    await storage.write(key: address, value: text);
+    await storage.write(key: 'recent', value: selectedText);
   }
 
   @override
@@ -59,10 +59,10 @@ class _ContentWidgetState extends State<ContentWidget> {
                 softWrap: true,
                 style: TextStyle(
     fontSize: widget.textFontButtonClicked == 0
-        ? 12.0
+        ? 15.0
         : widget.textFontButtonClicked == 1
-            ? 16.0
-            : 20.0,
+            ? 20.0
+            : 25.0,
   ),
               ),
             ),

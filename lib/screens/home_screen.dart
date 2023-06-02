@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goodbible/models/bible_content_model.dart';
+import 'package:goodbible/screens/saved_test_file_list_screen.dart';
 import 'package:goodbible/screens/saved_text_list_screen.dart';
 import 'package:goodbible/screens/search_screen.dart';
 import 'package:goodbible/screens/search_text_screen.dart';
@@ -67,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const SavedTextListScreen(),
+        builder: (context) => const SavedTextFileListScreen(),
       ),
     );
   }
