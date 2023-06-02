@@ -27,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late int chapter;
   late SharedPreferences prefs;
 
+  late int textFontButtonClicked = 0;
+
   Future initPrefs() async {
     prefs = await SharedPreferences.getInstance();
     final savedBook = prefs.getString('savedBook');
@@ -79,7 +81,17 @@ class _HomeScreenState extends State<HomeScreen> {
     contentList = ApiService.getVerseListByBookAndChapter(book, chapter);
   }
 
-  onPressed() {}
+  textSizeChange() {
+    print('before click $textFontButtonClicked');
+    textFontButtonClicked = textFontButtonClicked + 1;
+    if(textFontButtonClicked==3){
+      textFontButtonClicked = 0;
+    }
+    setState(() {
+      
+    });
+    print('after click $textFontButtonClicked');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: onPressed,
+            onPressed: textSizeChange,
             icon: const Icon(Icons.format_size),
           ),
         ],
@@ -110,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
-                  child: makeList(snapshot),
+                  child: makeList(snapshot,textFontButtonClicked),
                 );
               }
               return Container();
@@ -141,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot) {
+ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot,int textFontButtonClicked) {
   return ListView.separated(
     separatorBuilder: (context, index) => const SizedBox(
       height: 10,
@@ -155,7 +167,8 @@ ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot) {
           book: content.book,
           chapter: content.chapter,
           verse: content.verse,
-          text: content.text);
+          text: content.text,
+          textFontButtonClicked: textFontButtonClicked);
     },
   );
 }

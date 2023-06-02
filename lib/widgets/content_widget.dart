@@ -4,7 +4,7 @@ import 'package:goodbible/services/api_service.dart';
 
 class ContentWidget extends StatefulWidget {
   final String book, text;
-  final int chapter, verse;
+  final int chapter, verse, textFontButtonClicked;
   final String short;
 
   ContentWidget({
@@ -13,6 +13,7 @@ class ContentWidget extends StatefulWidget {
     required this.chapter,
     required this.verse,
     required this.text,
+    required this.textFontButtonClicked
   })  : short = ApiService.getShortByBook(book),
         super(key: key);
 
@@ -56,6 +57,13 @@ class _ContentWidgetState extends State<ContentWidget> {
               child: Text(
                 ':${widget.verse} ${widget.text}',
                 softWrap: true,
+                style: TextStyle(
+    fontSize: widget.textFontButtonClicked == 0
+        ? 12.0
+        : widget.textFontButtonClicked == 1
+            ? 16.0
+            : 20.0,
+  ),
               ),
             ),
           ),
