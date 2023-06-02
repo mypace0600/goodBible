@@ -80,20 +80,34 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
           ),
         ),
       ),
-      body: Flex(
-        direction: Axis.vertical,
+      body: Column(
         children: [
-          FutureBuilder(
-            future: resultTextList,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Expanded(
-                  child: makeList(snapshot, textEditingController.text),
-                );
-              }
-              return Container();
-            },
-          )
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FutureBuilder(
+              future: resultTextList,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    '전체 검색 수 : ${snapshot.data!.length}',
+                    style: TextStyle(fontSize: 18,color: Colors.black.withOpacity(0.4),),
+                  );
+                }
+                return Container();
+              },
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: resultTextList,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return makeList(snapshot, textEditingController.text);
+                }
+                return Container();
+              },
+            ),
+          ),
         ],
       ),
     );
