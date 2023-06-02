@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:goodbible/models/save_model.dart';
 import 'package:goodbible/services/api_service.dart';
+import 'package:goodbible/utils/data.dart';
 
 class ContentWidget extends StatefulWidget {
   final String book, text;
@@ -24,12 +26,16 @@ class ContentWidget extends StatefulWidget {
 class _ContentWidgetState extends State<ContentWidget> {
   bool isSelected = false;
 
-  Future<void> saveTextAddressToLocalStorage(
-      String book, int chapter, int verse, String text) async {
-    String selectedText = '${widget.short} ${chapter + 1}:$verse $text';
-    print(selectedText);
-    const storage = FlutterSecureStorage();
-    await storage.write(key: 'recent', value: selectedText);
+  void saveTextToLocalStorage(){
+    SaveText(
+      id: DataUtils.makeUUID(),
+      fileName: 'recent',
+      book: widget.book,
+      chapter: widget.chapter,
+      vere: widget.verse,
+      text: widget.text,
+      savedTime: DataUtils.nowTime(),
+    );
   }
 
   @override
@@ -42,8 +48,7 @@ class _ContentWidgetState extends State<ContentWidget> {
               setState(() {
                 isSelected = true;
               });
-              saveTextAddressToLocalStorage(
-                  widget.book, widget.chapter, widget.verse, widget.text);
+              saveTextToLocalStorage();
             },
             onLongPressEnd: (_) {
               setState(() {
