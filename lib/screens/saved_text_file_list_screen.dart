@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:goodbible/models/save_file_model.dart';
+import 'package:goodbible/repositories/save_file_crud_repository.dart';
 import 'package:goodbible/screens/saved_text_list_screen.dart';
 
 class SavedTextFileListScreen extends StatefulWidget {
   const SavedTextFileListScreen({super.key});
 
   @override
-  State<SavedTextFileListScreen> createState() => _SavedTextFileListScreenState();
+  State<SavedTextFileListScreen> createState() =>
+      _SavedTextFileListScreenState();
 }
 
 class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-  late List<String> fileKeys = [];
+  late List<String> fileTitles = [];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    loadFileKeys();
+    loadSaveFileList();
   }
 
-  Future<void> loadFileKeys()async {
-    bool recentExists = await secureStorage.containsKey(key: 'recent');
-    List<String> keys = await secureStorage.readAll().then((value) => value.keys.toList(),);
-    print('recentExists ? $recentExists');
-    if(!recentExists){
-      fileKeys.add('recent');
+  Future<List<SaveFile>> loadSaveFileList() async {
+    List<SaveFile> result = await SaveFileCRUDRepository.getList();
+    if (result.isEmpty) {
+      SaveFile newFile = const SaveFile(fileName: 'recent');
+      await SaveFileCRUDRepository.create(newFile);
     }
-    setState(() {
-      fileKeys.addAll(keys);
-    });
-    print(fileKeys);
+    for (SaveFile item in result) {
+      if (!fileTitles.contains(item.fileName)) {
+        fileTitles.add(item.fileName!);
+      }
+    }
+    setState(() {});
+    return result;
   }
 
   Future<void> addNewFileKey(BuildContext context) async {
@@ -46,8 +51,15 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop(inputText);
+                if (inputText != null && inputText!.isNotEmpty) {
+                  SaveFile newFile = SaveFile(fileName: inputText!);
+                  await SaveFileCRUDRepository.create(newFile);
+                  setState(() {
+                    fileTitles.add(inputText!);
+                  });
+                }
               },
               child: const Text('OK'),
             ),
@@ -55,30 +67,30 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
         );
       },
     );
-
-    if (fileName != null) {
-      setState(() {
-        fileKeys.add(fileName);
-      });
-    }
   }
 
-  void navigateToSavedTextListScreen(String fileKey){
-    Navigator.push(context,
-    MaterialPageRoute(builder: (context)=> SavedTextListScreen(fileKey:fileKey),),);
+  void navigateToSavedTextListScreen(String fileKey) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SavedTextListScreen(fileKey: fileKey),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         title: const Text('Saved Text Files'),
         actions: [
           IconButton(
-            onPressed: (){
+            onPressed: () {
               addNewFileKey(context);
             },
-            icon: const Icon(Icons.add_to_photos,),
+            icon: const Icon(
+              Icons.add_to_photos,
+            ),
           )
         ],
       ),
@@ -89,10 +101,10 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
             GridView.count(
               shrinkWrap: true,
               crossAxisCount: 3,
-              children: List.generate(fileKeys.length, (index) {
+              children: List.generate(fileTitles.length, (index) {
                 return GestureDetector(
-                  onTap: (){
-                    navigateToSavedTextListScreen(fileKeys[index]);
+                  onTap: () {
+                    navigateToSavedTextListScreen(fileTitles[index]);
                   },
                   child: Container(
                     margin: const EdgeInsets.all(8.0),
@@ -101,8 +113,8 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
                     width: 100,
                     child: Center(
                       child: Text(
-                        fileKeys[index],
-                        style: TextStyle(color: Colors.white),
+                        fileTitles[index],
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -111,7 +123,7 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
             ),
           ],
         ),
-    ),
+      ),
     );
   }
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:goodbible/repositories/sql_database.dart';
 
 import 'screens/home_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SqlDataBase();
   runApp(const MyApp());
 }
 

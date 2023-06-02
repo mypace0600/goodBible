@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goodbible/models/bible_content_model.dart';
-import 'package:goodbible/screens/saved_test_file_list_screen.dart';
-import 'package:goodbible/screens/saved_text_list_screen.dart';
+import 'package:goodbible/screens/saved_text_file_list_screen.dart';
 import 'package:goodbible/screens/search_screen.dart';
 import 'package:goodbible/screens/search_text_screen.dart';
 import 'package:goodbible/services/api_service.dart';
@@ -85,12 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
   textSizeChange() {
     print('before click $textFontButtonClicked');
     textFontButtonClicked = textFontButtonClicked + 1;
-    if(textFontButtonClicked==3){
+    if (textFontButtonClicked == 3) {
       textFontButtonClicked = 0;
     }
-    setState(() {
-      
-    });
+    setState(() {});
     print('after click $textFontButtonClicked');
   }
 
@@ -123,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
-                  child: makeList(snapshot,textFontButtonClicked),
+                  child: makeList(snapshot, textFontButtonClicked),
                 );
               }
               return Container();
@@ -154,7 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot,int textFontButtonClicked) {
+ListView makeList(AsyncSnapshot<List<BibleContentModel>> snapshot,
+    int textFontButtonClicked) {
   return ListView.separated(
     separatorBuilder: (context, index) => const SizedBox(
       height: 10,

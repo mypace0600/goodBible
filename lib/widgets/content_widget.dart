@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:goodbible/models/save_model.dart';
+import 'package:goodbible/models/save_text_model.dart';
+import 'package:goodbible/repositories/save_text_crud_repository.dart';
 import 'package:goodbible/services/api_service.dart';
 import 'package:goodbible/utils/data.dart';
 
@@ -9,14 +9,14 @@ class ContentWidget extends StatefulWidget {
   final int chapter, verse, textFontButtonClicked;
   final String short;
 
-  ContentWidget({
-    Key? key,
-    required this.book,
-    required this.chapter,
-    required this.verse,
-    required this.text,
-    required this.textFontButtonClicked
-  })  : short = ApiService.getShortByBook(book),
+  ContentWidget(
+      {Key? key,
+      required this.book,
+      required this.chapter,
+      required this.verse,
+      required this.text,
+      required this.textFontButtonClicked})
+      : short = ApiService.getShortByBook(book),
         super(key: key);
 
   @override
@@ -26,17 +26,20 @@ class ContentWidget extends StatefulWidget {
 class _ContentWidgetState extends State<ContentWidget> {
   bool isSelected = false;
 
-  void saveTextToLocalStorage(){
-    SaveText(
-      id: DataUtils.makeUUID(),
+  void saveTextToLocalStorage() async {
+    var selectedText = SaveText(
       fileName: 'recent',
       book: widget.book,
       chapter: widget.chapter,
-      vere: widget.verse,
+      verse: widget.verse,
       text: widget.text,
       savedTime: DataUtils.nowTime(),
     );
+    await SaveTextCRUDRepository.create(selectedText);
+    update();
   }
+
+  void update() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +66,12 @@ class _ContentWidgetState extends State<ContentWidget> {
                 ':${widget.verse} ${widget.text}',
                 softWrap: true,
                 style: TextStyle(
-    fontSize: widget.textFontButtonClicked == 0
-        ? 15.0
-        : widget.textFontButtonClicked == 1
-            ? 20.0
-            : 25.0,
-  ),
+                  fontSize: widget.textFontButtonClicked == 0
+                      ? 15.0
+                      : widget.textFontButtonClicked == 1
+                          ? 20.0
+                          : 25.0,
+                ),
               ),
             ),
           ),
