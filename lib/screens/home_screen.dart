@@ -82,13 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   textSizeChange() {
-    print('before click $textFontButtonClicked');
     textFontButtonClicked = textFontButtonClicked + 1;
     if (textFontButtonClicked == 3) {
       textFontButtonClicked = 0;
     }
     setState(() {});
-    print('after click $textFontButtonClicked');
   }
 
   @override

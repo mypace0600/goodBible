@@ -1,3 +1,4 @@
+import 'package:goodbible/models/save_file_model.dart';
 import 'package:goodbible/models/save_text_model.dart';
 import 'package:goodbible/repositories/sql_database.dart';
 
@@ -8,26 +9,27 @@ class SaveTextCRUDRepository {
     return saveText.clone(id: id);
   }
 
-  static Future<List<SaveText>> getList() async {
+  static Future<List<SaveText>> getList(int fileId) async {
     var db = await SqlDataBase().database;
-    var result = await db.query(
-      SaveText.tableName,
-      columns: [
-        SaveTextFields.id,
-        SaveTextFields.fileIndex,
-        SaveTextFields.fileName,
-        SaveTextFields.book,
-        SaveTextFields.chapter,
-        SaveTextFields.verse,
-        SaveTextFields.text,
-        SaveTextFields.savedTime,
-      ],
-    );
+    var result = await db.rawQuery('''
+    SELECT ${SaveText.tableName}.*, ${SaveFile.tableName}.${SaveFileFields.fileName}
+    FROM ${SaveText.tableName}
+    LEFT JOIN ${SaveFile.tableName}
+    ON ${SaveText.tableName}.${SaveTextFields.fileId} = ${SaveFile.tableName}.${SaveFileFields.fileId}
+    WHERE ${SaveText.tableName}.${SaveTextFields.fileId} = $fileId
+  ''');
 
-    return result.map(
-      (data) {
-        return SaveText.fromJson(data);
-      },
-    ).toList();
+    return result.map((data) {
+      return SaveText.fromJson(data);
+    }).toList();
+  }
+
+  static Future<void> deleteSaveTextById(int id) async {
+    var db = await SqlDataBase().database;
+    await db.delete(
+      SaveText.tableName,
+      where: '${SaveTextFields.id} = ?',
+      whereArgs: [id],
+    );
   }
 }

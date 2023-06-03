@@ -28,12 +28,12 @@ class _ContentWidgetState extends State<ContentWidget> {
 
   void saveTextToLocalStorage() async {
     var selectedText = SaveText(
-      fileName: 'recent',
+      fileId: 1,
       book: widget.book,
       chapter: widget.chapter,
       verse: widget.verse,
       text: widget.text,
-      savedTime: DataUtils.nowTime(),
+      savedTime: DataUtils.nowTime().toString(),
     );
     await SaveTextCRUDRepository.create(selectedText);
     update();

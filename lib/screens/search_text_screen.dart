@@ -24,7 +24,6 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
   }
 
   onSearchText(String text) {
-    print(text);
     setState(() {
       resultTextList = ApiService.searchTextList(text);
     });
@@ -90,7 +89,10 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
                 if (snapshot.hasData) {
                   return Text(
                     '전체 검색 수 : ${snapshot.data!.length}',
-                    style: TextStyle(fontSize: 18,color: Colors.black.withOpacity(0.4),),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black.withOpacity(0.4),
+                    ),
                   );
                 }
                 return Container();

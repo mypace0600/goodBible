@@ -1,7 +1,8 @@
+import 'package:goodbible/models/save_file_model.dart';
+
 class SaveTextFields {
   static const String id = '_id';
-  static const String fileIndex = '_fileIndex';
-  static const String fileName = '_fileName';
+  static const String fileId = '_fileId';
   static const String book = '_book';
   static const String chapter = '_chapter';
   static const String verse = '_verse';
@@ -12,8 +13,7 @@ class SaveTextFields {
 class SaveText {
   static String tableName = 'saveText';
   final int? id;
-  final int? fileIndex;
-  final String? fileName;
+  final int? fileId;
   final String? book;
   final int? chapter;
   final int? verse;
@@ -22,8 +22,7 @@ class SaveText {
 
   const SaveText({
     this.id,
-    this.fileIndex,
-    this.fileName,
+    this.fileId,
     this.book,
     this.chapter,
     this.verse,
@@ -34,8 +33,7 @@ class SaveText {
   Map<String, dynamic> toJson() {
     return {
       SaveTextFields.id: id,
-      SaveTextFields.fileIndex: fileIndex,
-      SaveTextFields.fileName: fileName,
+      SaveFileFields.fileId: fileId,
       SaveTextFields.book: book,
       SaveTextFields.chapter: chapter,
       SaveTextFields.verse: verse,
@@ -47,7 +45,6 @@ class SaveText {
   SaveText clone({
     int? id,
     int? fileIndex,
-    String? fileName,
     String? book,
     int? chapter,
     int? verse,
@@ -56,7 +53,7 @@ class SaveText {
   }) {
     return SaveText(
       id: id ?? this.id,
-      fileName: fileName ?? this.fileName,
+      fileId: fileId ?? fileId,
       book: book ?? this.book,
       chapter: chapter ?? this.chapter,
       verse: verse ?? this.verse,
@@ -68,7 +65,7 @@ class SaveText {
   factory SaveText.fromJson(Map<dynamic, dynamic> json) {
     return SaveText(
       id: json[SaveTextFields.id] as int,
-      fileName: json[SaveTextFields.fileName],
+      fileId: json[SaveFileFields.fileId],
       book: json[SaveTextFields.book],
       chapter: json[SaveTextFields.chapter] as int,
       verse: json[SaveTextFields.verse] as int,

@@ -28,7 +28,7 @@ class SqlDataBase {
   Future<void> _initDataBase() async {
     var dataBasesPath = await getDatabasesPath();
     String path = join(dataBasesPath, 'bible.db');
-    print(path);
+
     _database = await openDatabase(
       path,
       version: 1,
@@ -36,8 +36,7 @@ class SqlDataBase {
         await db.execute('''
       CREATE TABLE $saveText (
         ${SaveTextFields.id} integer primary key autoincrement,
-        ${SaveFileFields.fileId} integer,
-        ${SaveFileFields.fileName} text,
+        ${SaveFileFields.fileId} integer foreign key,
         ${SaveTextFields.book} text,
         ${SaveTextFields.chapter} integer,
         ${SaveTextFields.verse} integer,

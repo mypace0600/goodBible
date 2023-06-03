@@ -5,7 +5,7 @@ import 'package:goodbible/repositories/save_file_crud_repository.dart';
 import 'package:goodbible/screens/saved_text_list_screen.dart';
 
 class SavedTextFileListScreen extends StatefulWidget {
-  const SavedTextFileListScreen({super.key});
+  const SavedTextFileListScreen({Key? key}) : super(key: key);
 
   @override
   State<SavedTextFileListScreen> createState() =>
@@ -14,12 +14,12 @@ class SavedTextFileListScreen extends StatefulWidget {
 
 class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-  late List<String> fileTitles = [];
+  late Future<List<SaveFile>> fileTitles;
 
   @override
   void initState() {
     super.initState();
-    loadSaveFileList();
+    fileTitles = loadSaveFileList();
   }
 
   Future<List<SaveFile>> loadSaveFileList() async {
@@ -28,12 +28,6 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
       SaveFile newFile = const SaveFile(fileName: 'recent');
       await SaveFileCRUDRepository.create(newFile);
     }
-    for (SaveFile item in result) {
-      if (!fileTitles.contains(item.fileName)) {
-        fileTitles.add(item.fileName!);
-      }
-    }
-    setState(() {});
     return result;
   }
 
@@ -56,9 +50,6 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
                 if (inputText != null && inputText!.isNotEmpty) {
                   SaveFile newFile = SaveFile(fileName: inputText!);
                   await SaveFileCRUDRepository.create(newFile);
-                  setState(() {
-                    fileTitles.add(inputText!);
-                  });
                 }
               },
               child: const Text('OK'),
@@ -69,11 +60,12 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
     );
   }
 
-  void navigateToSavedTextListScreen(String fileKey) {
+  void navigateToSavedTextListScreen(String fileName, int fileId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SavedTextListScreen(fileKey: fileKey),
+        builder: (context) =>
+            SavedTextListScreen(fileId: fileId, fileName: fileName),
       ),
     );
   }
@@ -98,28 +90,42 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 3,
-              children: List.generate(fileTitles.length, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    navigateToSavedTextListScreen(fileTitles[index]);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(8.0),
-                    color: Colors.blue,
-                    height: 100,
-                    width: 100,
-                    child: Center(
-                      child: Text(
-                        fileTitles[index],
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                );
-              }),
+            FutureBuilder<List<SaveFile>>(
+              future: fileTitles,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 3,
+                    children: List.generate(snapshot.data!.length, (index) {
+                      return GestureDetector(
+                        onTap: () {
+                          navigateToSavedTextListScreen(
+                            snapshot.data![index].fileName!,
+                            snapshot.data![index].fileId!,
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(8.0),
+                          color: Colors.blue,
+                          height: 100,
+                          width: 100,
+                          child: Center(
+                            child: Text(
+                              snapshot.data![index].fileName!,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
             ),
           ],
         ),

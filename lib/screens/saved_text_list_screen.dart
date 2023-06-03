@@ -1,40 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:goodbible/models/save_text_model.dart';
+import 'package:goodbible/repositories/save_text_crud_repository.dart';
 
 class SavedTextListScreen extends StatefulWidget {
-  final String fileKey;
-  const SavedTextListScreen({super.key,required this.fileKey,});
+  final int fileId;
+  final String fileName;
+  const SavedTextListScreen({
+    Key? key,
+    required this.fileId,
+    required this.fileName,
+  }) : super(key: key);
 
   @override
   State<SavedTextListScreen> createState() => _SavedTextListScreenState();
 }
 
 class _SavedTextListScreenState extends State<SavedTextListScreen> {
-  late Future<Map<String, String>> savedList;
+  late Future<List<SaveText>> savedList;
 
   @override
   void initState() {
     super.initState();
-    savedList = getAllSavedData();
+    savedList = getAllSaveTextByFileId(widget.fileId);
   }
 
-  Future<Map<String, String>> getAllSavedData() async {
-    const storage = FlutterSecureStorage();
-    final allData = await storage.readAll();
-    final filteredData = <String, String>{};
-    allData.forEach((key, value) {
-      if (key.contains(widget.fileKey)) {
-        filteredData[key] = value;
-      }
-    });
-    return filteredData;
+  Future<List<SaveText>> getAllSaveTextByFileId(int fileId) async {
+    List<SaveText> result = await SaveTextCRUDRepository.getList(fileId);
+    return result;
   }
 
-  Future<void> deleteSavedData(String key) async {
-    const storage = FlutterSecureStorage();
-    await storage.delete(key: key);
+  Future<void> deleteSavedData(int id) async {
+    await SaveTextCRUDRepository.deleteSaveTextById(id);
     setState(() {
-      savedList = getAllSavedData();
+      savedList = getAllSaveTextByFileId(widget.fileId);
     });
   }
 
@@ -42,9 +40,12 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.fileKey),
+        title: Text(widget.fileName),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
+        ],
       ),
-      body: FutureBuilder<Map<String, String>>(
+      body: FutureBuilder<List<SaveText>>(
         future: savedList,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -52,17 +53,18 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
           }
           if (snapshot.hasData) {
             final savedData = snapshot.data;
-            if (savedData != null) {
+            if (savedData != null && savedData.isNotEmpty) {
               return ListView.builder(
                 itemCount: savedData.length,
                 itemBuilder: (context, index) {
-                  final key = savedData.keys.elementAt(index);
-                  final value = savedData[key];
+                  String address =
+                      '${savedData[index].book} ${savedData[index].chapter! + 1}:${savedData[index].verse}';
+                  String contentText = '${savedData[index].text}';
                   return Dismissible(
-                    key: Key(key),
+                    key: Key(savedData[index].id.toString()),
                     direction: DismissDirection.endToStart,
                     onDismissed: (direction) {
-                      deleteSavedData(key);
+                      deleteSavedData(savedData[index].id!);
                     },
                     background: Container(
                       color: Colors.red,
@@ -74,8 +76,8 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
                       ),
                     ),
                     child: ListTile(
-                      title: Text(key),
-                      subtitle: Text(value ?? ''),
+                      title: Text(address),
+                      subtitle: Text(contentText),
                     ),
                   );
                 },
