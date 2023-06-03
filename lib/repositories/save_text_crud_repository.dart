@@ -32,4 +32,14 @@ class SaveTextCRUDRepository {
       whereArgs: [id],
     );
   }
+
+  static Future<void> updateSaveTextById(int id, int newFileId) async {
+    var db = await SqlDataBase().database;
+    await db.update(
+      SaveText.tableName,
+      {'_fileId': newFileId},
+      where: '_id = ?',
+      whereArgs: [id],
+    );
+  }
 }
