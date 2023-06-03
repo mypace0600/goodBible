@@ -4,6 +4,7 @@ import 'package:goodbible/models/save_text_model.dart';
 import 'package:goodbible/repositories/save_file_crud_repository.dart';
 import 'package:goodbible/repositories/save_text_crud_repository.dart';
 import 'package:goodbible/screens/saved_text_file_list_screen.dart';
+import 'package:goodbible/widgets/bottom_sheet_widget.dart';
 
 class SavedTextListScreen extends StatefulWidget {
   final int fileId;
@@ -21,6 +22,7 @@ class SavedTextListScreen extends StatefulWidget {
 class _SavedTextListScreenState extends State<SavedTextListScreen> {
   late Future<List<SaveText>> savedTextList;
   late Future<List<SaveFile>> savedFileList;
+  List<SaveText> selectedItems = [];
 
   bool isSelectMode = false;
 
@@ -95,6 +97,9 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
                 title: const Text('Select'),
                 onTap: () {
                   // Select 기능 수행
+                  setState(() {
+                    isSelectMode = !isSelectMode;
+                  });
                   Navigator.pop(context);
                 },
               ),
@@ -149,6 +154,19 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
                       ),
                     ),
                     child: ListTile(
+                      leading: isSelectMode
+                          ? Checkbox(
+                              value: selectedItems.contains(savedData[index]),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value!) {
+                                    selectedItems.add(savedData[index]);
+                                  } else {
+                                    selectedItems.remove(savedData[index]);
+                                  }
+                                });
+                              })
+                          : null,
                       title: Text(address),
                       subtitle: Text(contentText),
                     ),
@@ -162,6 +180,13 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
           );
         },
       ),
+      bottomSheet: isSelectMode
+          ? BottomSheetWidget(
+              selectedItems: selectedItems,
+              deleteSavedData: deleteSavedData,
+              isSelectMode: isSelectMode,
+            )
+          : null,
     );
   }
 }
