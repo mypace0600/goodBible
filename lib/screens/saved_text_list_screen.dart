@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:goodbible/models/save_file_model.dart';
 import 'package:goodbible/models/save_text_model.dart';
+import 'package:goodbible/repositories/save_file_crud_repository.dart';
 import 'package:goodbible/repositories/save_text_crud_repository.dart';
+import 'package:goodbible/screens/saved_text_file_list_screen.dart';
 
 class SavedTextListScreen extends StatefulWidget {
   final int fileId;
@@ -16,12 +19,16 @@ class SavedTextListScreen extends StatefulWidget {
 }
 
 class _SavedTextListScreenState extends State<SavedTextListScreen> {
-  late Future<List<SaveText>> savedList;
+  late Future<List<SaveText>> savedTextList;
+  late Future<List<SaveFile>> savedFileList;
+
+  bool isSelectMode = false;
 
   @override
   void initState() {
     super.initState();
-    savedList = getAllSaveTextByFileId(widget.fileId);
+    savedTextList = getAllSaveTextByFileId(widget.fileId);
+    savedFileList = getAllSaveFile();
   }
 
   Future<List<SaveText>> getAllSaveTextByFileId(int fileId) async {
@@ -29,11 +36,73 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
     return result;
   }
 
+  Future<List<SaveFile>> getAllSaveFile() async {
+    List<SaveFile> result = await SaveFileCRUDRepository.getList();
+    return result;
+  }
+
   Future<void> deleteSavedData(int id) async {
     await SaveTextCRUDRepository.deleteSaveTextById(id);
     setState(() {
-      savedList = getAllSaveTextByFileId(widget.fileId);
+      savedTextList = getAllSaveTextByFileId(widget.fileId);
     });
+  }
+
+  Future<void> deletSaveFileById(int id) async {
+    await SaveFileCRUDRepository.deleteSaveFileById(id);
+    setState(() {
+      savedFileList = getAllSaveFile();
+    });
+  }
+
+  void showModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 15,
+            horizontal: 30,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.delete),
+                title: const Text('Delete'),
+                onTap: () {
+                  // Delete 기능 수행
+                  deletSaveFileById(widget.fileId);
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SavedTextFileListScreen(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.edit),
+                title: const Text('Edit'),
+                onTap: () {
+                  // Edit 기능 수행
+                  Navigator.pop(context); // BottomSheet 닫기
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.check_box),
+                title: const Text('Select'),
+                onTap: () {
+                  // Select 기능 수행
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -42,11 +111,15 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
       appBar: AppBar(
         title: Text(widget.fileName),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
+          IconButton(
+              onPressed: () {
+                showModal();
+              },
+              icon: const Icon(Icons.more_vert))
         ],
       ),
       body: FutureBuilder<List<SaveText>>(
-        future: savedList,
+        future: savedTextList,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();

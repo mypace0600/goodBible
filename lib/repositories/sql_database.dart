@@ -34,23 +34,24 @@ class SqlDataBase {
       version: 1,
       onCreate: (Database db, int version) async {
         await db.execute('''
-      CREATE TABLE $saveText (
-        ${SaveTextFields.id} integer primary key autoincrement,
-        ${SaveFileFields.fileId} integer foreign key,
-        ${SaveTextFields.book} text,
-        ${SaveTextFields.chapter} integer,
-        ${SaveTextFields.verse} integer,
-        ${SaveTextFields.text} text,
-        ${SaveTextFields.savedTime} text
-      )
-      
-    ''');
+CREATE TABLE $saveText (
+  ${SaveTextFields.id} integer primary key autoincrement,
+  ${SaveTextFields.fileId} integer,
+  ${SaveTextFields.book} text,
+  ${SaveTextFields.chapter} integer,
+  ${SaveTextFields.verse} integer,
+  ${SaveTextFields.text} text,
+  ${SaveTextFields.savedTime} text,
+  foreign key (${SaveTextFields.fileId}) references $saveFile (${SaveFileFields.fileId})
+)
+''');
+
         await db.execute('''
-      CREATE TABLE $saveFile(
-        ${SaveFileFields.fileId} integer primary key autoincrement,
-        ${SaveFileFields.fileName} text
-      )
-      ''');
+CREATE TABLE $saveFile (
+  ${SaveFileFields.fileId} integer primary key autoincrement,
+  ${SaveFileFields.fileName} text
+)
+''');
       },
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:goodbible/models/save_file_model.dart';
 import 'package:goodbible/repositories/save_file_crud_repository.dart';
 import 'package:goodbible/screens/saved_text_list_screen.dart';
@@ -13,13 +12,12 @@ class SavedTextFileListScreen extends StatefulWidget {
 }
 
 class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-  late Future<List<SaveFile>> fileTitles;
+  late Future<List<SaveFile>> savedFileList;
 
   @override
   void initState() {
     super.initState();
-    fileTitles = loadSaveFileList();
+    savedFileList = loadSaveFileList();
   }
 
   Future<List<SaveFile>> loadSaveFileList() async {
@@ -50,6 +48,9 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
                 if (inputText != null && inputText!.isNotEmpty) {
                   SaveFile newFile = SaveFile(fileName: inputText!);
                   await SaveFileCRUDRepository.create(newFile);
+                  setState(() {
+                    savedFileList = loadSaveFileList();
+                  });
                 }
               },
               child: const Text('OK'),
@@ -91,7 +92,7 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
         child: Column(
           children: [
             FutureBuilder<List<SaveFile>>(
-              future: fileTitles,
+              future: savedFileList,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return GridView.count(

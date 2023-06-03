@@ -23,4 +23,13 @@ class SaveFileCRUDRepository {
       },
     ).toList();
   }
+
+  static Future<void> deleteSaveFileById(int id) async {
+    var db = await SqlDataBase().database;
+    await db.delete(
+      SaveFile.tableName,
+      where: '${SaveFileFields.fileId}=?',
+      whereArgs: [id],
+    );
+  }
 }
