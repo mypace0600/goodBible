@@ -32,4 +32,14 @@ class SaveFileCRUDRepository {
       whereArgs: [id],
     );
   }
+
+  static Future<void> updateFileName(String newFileName, int id) async {
+    var db = await SqlDataBase().database;
+    await db.update(
+      SaveFile.tableName,
+      {'_fileName': newFileName},
+      where: '_fileid = ?',
+      whereArgs: [id],
+    );
+  }
 }

@@ -8,8 +8,8 @@ import 'package:goodbible/widgets/bottom_sheet_widget.dart';
 
 class SavedTextListScreen extends StatefulWidget {
   final int fileId;
-  final String fileName;
-  const SavedTextListScreen({
+  String fileName;
+  SavedTextListScreen({
     Key? key,
     required this.fileId,
     required this.fileName,
@@ -23,8 +23,10 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
   late Future<List<SaveText>> savedTextList;
   late Future<List<SaveFile>> savedFileList;
   List<SaveText> selectedItems = [];
-
   bool isSelectMode = false;
+  bool isEditMode = false;
+
+  final TextEditingController _nameEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -57,6 +59,72 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
     });
   }
 
+  Future<void> _editFileName(String newName, int fileId) async {
+    await SaveFileCRUDRepository.updateFileName(newName, fileId);
+    setState(() {
+      widget.fileName = newName;
+    });
+  }
+
+  void _showNameInputDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Edit Name'),
+            content: TextField(
+              controller: _nameEditingController,
+              decoration: const InputDecoration(hintText: 'New Name is'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _editFileName(_nameEditingController.text, widget.fileId);
+                  Navigator.pop(context);
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _showAreYouSureDialog() {
+    final curreuntContext = context;
+    showDialog(
+        context: curreuntContext,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Are You Sure?'),
+            content: const Text(
+                'This will be delete the file and all associated saved texts.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(curreuntContext);
+                  deletSaveFileById(widget.fileId);
+                  Navigator.pop(curreuntContext);
+                  Navigator.pushReplacement(
+                    curreuntContext,
+                    MaterialPageRoute(
+                      builder: (context) => const SavedTextFileListScreen(),
+                    ),
+                  );
+                },
+                child: const Text('Delete'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(curreuntContext);
+                },
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        });
+  }
+
   void showModal() {
     showModalBottomSheet(
       context: context,
@@ -74,22 +142,15 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
                 title: const Text('Delete'),
                 onTap: () {
                   // Delete 기능 수행
-                  deletSaveFileById(widget.fileId);
-                  Navigator.pop(context);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SavedTextFileListScreen(),
-                    ),
-                  );
+                  _showAreYouSureDialog();
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text('Edit'),
+                title: const Text('Edit Name'),
                 onTap: () {
                   // Edit 기능 수행
-                  Navigator.pop(context); // BottomSheet 닫기
+                  _showNameInputDialog(); // BottomSheet 닫기
                 },
               ),
               ListTile(
