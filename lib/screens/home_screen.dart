@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goodbible/models/bible_content_model.dart';
+import 'package:goodbible/screens/about_screen.dart';
 import 'package:goodbible/screens/saved_text_file_list_screen.dart';
 import 'package:goodbible/screens/search_screen.dart';
 import 'package:goodbible/screens/search_text_screen.dart';
@@ -59,6 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) => SearchTextScreen(
           textEditingController: textEditingController,
         ),
+      ),
+    );
+  }
+
+  aboutInfoAction() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AboutScreen(),
       ),
     );
   }
@@ -139,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.search),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: aboutInfoAction,
               icon: const Icon(Icons.menu),
             ),
           ],

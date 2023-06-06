@@ -82,6 +82,13 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
                   Navigator.pop(context);
                   _editFileName(_nameEditingController.text, widget.fileId);
                   Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SavedTextFileListScreen(),
+                    ),
+                  );
                 },
                 child: const Text('Save'),
               ),
@@ -104,6 +111,7 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
                 onPressed: () {
                   Navigator.pop(curreuntContext);
                   deletSaveFileById(widget.fileId);
+                  Navigator.pop(curreuntContext);
                   Navigator.pop(curreuntContext);
                   Navigator.pushReplacement(
                     curreuntContext,

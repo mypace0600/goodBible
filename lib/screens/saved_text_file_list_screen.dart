@@ -29,6 +29,12 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
     return result;
   }
 
+  @override
+  void didUpdateWidget(SavedTextFileListScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    savedFileList = loadSaveFileList();
+  }
+
   Future<void> addNewFileKey(BuildContext context) async {
     String? fileName = await showDialog<String>(
       context: context,

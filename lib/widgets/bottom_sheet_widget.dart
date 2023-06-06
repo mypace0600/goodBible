@@ -109,6 +109,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                                   snapshot
                                                       .data![index].fileId!);
                                               Navigator.pop(context);
+                                              Navigator.pop(context);
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
