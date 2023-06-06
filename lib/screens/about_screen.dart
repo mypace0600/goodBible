@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:goodbible/screens/login_screen.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -21,7 +22,14 @@ class _AboutScreenState extends State<AboutScreen> {
 
   void shareApp() {}
 
-  void loginAndOut() {}
+  void loginAndOut() {
+    if (_user != null) {
+      print('로그아웃 구현');
+    } else {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
