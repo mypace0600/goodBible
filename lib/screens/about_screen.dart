@@ -19,7 +19,8 @@ class AboutScreen extends StatelessWidget {
                 horizontal: 20,
               ),
               decoration: BoxDecoration(
-                  color: Colors.grey, borderRadius: BorderRadius.circular(40)),
+                  color: Colors.black.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(40)),
               child: Row(
                 children: [
                   Container(
@@ -33,7 +34,7 @@ class AboutScreen extends StatelessWidget {
                     height: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
-                      color: Colors.green,
+                      color: Colors.black,
                     ),
                     child: const Text('img'),
                   ),
@@ -64,23 +65,55 @@ class AboutScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      child: const Row(
-                        children: [
-                          Icon(Icons.notifications_outlined),
-                          Text('알림'),
-                        ],
+                      decoration: BoxDecoration(
+                        border: BorderDirectional(
+                          bottom: BorderSide(
+                            color: Colors.black.withOpacity(0.1),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 15,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.notifications_outlined),
+                            Text('알림'),
+                          ],
+                        ),
                       ),
                     ),
                     Container(
-                      child: const Row(
-                        children: [
-                          Icon(Icons.share_outlined),
-                          Text('공유'),
-                        ],
+                      decoration: BoxDecoration(
+                        border: BorderDirectional(
+                          bottom: BorderSide(
+                            color: Colors.black.withOpacity(0.1),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 15,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.share_outlined),
+                            Text('공유'),
+                          ],
+                        ),
                       ),
                     ),
-                    Container(
-                      child: const Row(
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 15,
+                      ),
+                      child: Row(
                         children: [
                           Icon(Icons.logout_outlined),
                           Text('로그아웃'),

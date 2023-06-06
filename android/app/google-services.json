@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "112620706161",
+    "project_id": "goodbible-e78d0",
+    "storage_bucket": "goodbible-e78d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112620706161:android:56ed0160b4d987b8353ed0",
+        "android_client_info": {
+          "package_name": "com.example.goodbible"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "112620706161-19ge2o6lp0l4kmhek52tmm72kmh2vspt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.goodbible",
+            "certificate_hash": "a886d7c8f4eaec3ad022f91719e239c71f6f3bad"
+          }
+        },
+        {
+          "client_id": "112620706161-hbaf4t4ubo5er8re1subsbdp892kd84j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnNrJdmkqF1bpMOIBnTIhl6954SsL7yHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "112620706161-hbaf4t4ubo5er8re1subsbdp892kd84j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "112620706161-rc69thhknt868rm4ou7jiomcq0mme1td.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.goodbible"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
