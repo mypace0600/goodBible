@@ -11,6 +11,7 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
   User? _user;
+  bool _isLoggedIn = false;
 
   @override
   void initState() {
@@ -22,23 +23,51 @@ class _AboutScreenState extends State<AboutScreen> {
 
   void shareApp() {}
 
+  void _areYouSure() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Log out"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    setState(() {
+                      _isLoggedIn = false;
+                    });
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AboutScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text("Yes")),
+              TextButton(onPressed: () {}, child: const Text("No")),
+            ],
+          );
+        });
+  }
 
-  Future<UserCredential> signInWithGoogle() async {
-  // Trigger the authentication flow
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  Future<void> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    await FirebaseAuth.instance.signInWithCredential(credential);
 
-  // Obtain the auth details from the request
-  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-  // Create a new credential
-  final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth?.accessToken,
-    idToken: googleAuth?.idToken,
-  );
-
-  // Once signed in, return the UserCredential
-  return await FirebaseAuth.instance.signInWithCredential(credential);
-}
+    setState(() {
+      _user = FirebaseAuth.instance.currentUser;
+      _isLoggedIn = true;
+    });
+    print(_user);
+    print(_isLoggedIn);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +103,13 @@ class _AboutScreenState extends State<AboutScreen> {
                         color: Colors.black,
                       ),
                       child: _user != null
-                          ? Image.network(_user!.photoURL ?? "")
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.network(
+                                _user!.photoURL ?? "",
+                                fit: BoxFit.cover,
+                              ),
+                            )
                           : const Text("")),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,31 +191,31 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
                     ),
-                     Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 15,
-                        ),
-                        child: _user != null
-                            ? GestureDetector(
-                              onTap: FirebaseAuth.instance.signOut,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 15,
+                      ),
+                      child: _user != null
+                          ? GestureDetector(
+                              onTap: _areYouSure,
                               child: const Row(
-                                  children: [
-                                    Icon(Icons.logout_outlined),
-                                    Text('로그아웃'),
-                                  ],
-                                ),
+                                children: [
+                                  Icon(Icons.logout_outlined),
+                                  Text('로그아웃'),
+                                ],
+                              ),
                             )
-                            : GestureDetector(
+                          : GestureDetector(
                               onTap: signInWithGoogle,
                               child: const Row(
-                                  children: [
-                                    Icon(Icons.login_outlined),
-                                    Text('로그인'),
-                                  ],
-                                ),
+                                children: [
+                                  Icon(Icons.login_outlined),
+                                  Text('로그인'),
+                                ],
+                              ),
                             ),
-                      ),
+                    ),
                   ],
                 ),
               ),
