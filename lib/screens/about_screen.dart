@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:goodbible/screens/login_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -22,14 +22,23 @@ class _AboutScreenState extends State<AboutScreen> {
 
   void shareApp() {}
 
-  void loginAndOut() {
-    if (_user != null) {
-      print('로그아웃 구현');
-    } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()));
-    }
-  }
+
+  Future<UserCredential> signInWithGoogle() async {
+  // Trigger the authentication flow
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
+
+  // Once signed in, return the UserCredential
+  return await FirebaseAuth.instance.signInWithCredential(credential);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -147,28 +156,31 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: loginAndOut,
-                      child: Padding(
+                     Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 20,
                           horizontal: 15,
                         ),
                         child: _user != null
-                            ? const Row(
-                                children: [
-                                  Icon(Icons.logout_outlined),
-                                  Text('로그아웃'),
-                                ],
-                              )
-                            : const Row(
-                                children: [
-                                  Icon(Icons.login_outlined),
-                                  Text('로그인'),
-                                ],
-                              ),
+                            ? GestureDetector(
+                              onTap: FirebaseAuth.instance.signOut,
+                              child: const Row(
+                                  children: [
+                                    Icon(Icons.logout_outlined),
+                                    Text('로그아웃'),
+                                  ],
+                                ),
+                            )
+                            : GestureDetector(
+                              onTap: signInWithGoogle,
+                              child: const Row(
+                                  children: [
+                                    Icon(Icons.login_outlined),
+                                    Text('로그인'),
+                                  ],
+                                ),
+                            ),
                       ),
-                    ),
                   ],
                 ),
               ),
