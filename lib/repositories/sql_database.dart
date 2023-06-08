@@ -1,3 +1,4 @@
+import 'package:goodbible/models/push_notification_info.dart';
 import 'package:goodbible/models/save_file_model.dart';
 import 'package:goodbible/models/save_text_model.dart';
 import 'package:path/path.dart';
@@ -5,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 
 const String saveText = 'saveText';
 const String saveFile = 'saveFile';
+const String pushInfo = 'pushInfo';
 
 class SqlDataBase {
   static final SqlDataBase instance = SqlDataBase._instance();
@@ -50,6 +52,14 @@ CREATE TABLE $saveText (
 CREATE TABLE $saveFile (
   ${SaveFileFields.fileId} integer primary key autoincrement,
   ${SaveFileFields.fileName} text
+)
+''');
+
+        await db.execute('''
+CREATE TABLE $pushInfo (
+  ${PushInfoFields.id} integer primary key autoincrement,
+  ${PushInfoFields.userId} text
+  ${PushInfoFields.token} text
 )
 ''');
       },

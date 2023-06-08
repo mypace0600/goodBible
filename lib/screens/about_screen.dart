@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -13,13 +14,54 @@ class _AboutScreenState extends State<AboutScreen> {
   User? _user;
   bool _isLoggedIn = false;
 
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
   @override
   void initState() {
     super.initState();
     _user = FirebaseAuth.instance.currentUser;
+    _firebaseMessaging.getToken().then((token) {
+      print('Device Token: $token');
+      // 여기에서 토큰을 사용하여 서버에 등록하거나 필요한 작업을 수행할 수 있습니다.
+    });
   }
 
-  void settingNotification() {}
+  bool _isNotificationEnabled = false;
+
+  void settingNotification() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('푸시 알림 설정'),
+          content: SwitchListTile(
+            title: const Text('푸시 알림 받기'),
+            value: _isNotificationEnabled,
+            onChanged: (bool value) {
+              setState(() {
+                _isNotificationEnabled = value;
+              });
+
+              // 푸시 알림 상태에 따른 동작 처리를 추가합니다.
+              if (value) {
+                // 알림을 켤 때 수행할 작업
+                // 예: 토큰을 서버에 등록
+              } else {
+                // 알림을 끌 때 수행할 작업
+                // 예: 토큰을 서버에서 제거
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('닫기'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void shareApp() {}
 
