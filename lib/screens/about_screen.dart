@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:goodbible/models/push_notification_info.dart';
+import 'package:goodbible/repositories/push_token_repository.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class AboutScreen extends StatefulWidget {
 class _AboutScreenState extends State<AboutScreen> {
   User? _user;
   bool _isLoggedIn = false;
+  late PushInfo pushInfo;
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
@@ -37,7 +40,7 @@ class _AboutScreenState extends State<AboutScreen> {
           content: SwitchListTile(
             title: const Text('푸시 알림 받기'),
             value: _isNotificationEnabled,
-            onChanged: (bool value) {
+            onChanged: (bool value) async {
               setState(() {
                 _isNotificationEnabled = value;
               });
@@ -46,9 +49,16 @@ class _AboutScreenState extends State<AboutScreen> {
               if (value) {
                 // 알림을 켤 때 수행할 작업
                 // 예: 토큰을 서버에 등록
+                String? token = await _firebaseMessaging.getToken();
+                print('Device Token: $token');
+                pushInfo = PushInfo();
+                pushInfo.token = token;
+                pushInfo.userId = _user!.email;
+                PushTokenCRUDRepository.save(pushInfo);
               } else {
                 // 알림을 끌 때 수행할 작업
                 // 예: 토큰을 서버에서 제거
+                PushTokenCRUDRepository.remove(_user!.email!);
               }
             },
           ),
@@ -63,6 +73,7 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
+  // todo
   void shareApp() {}
 
   void _areYouSure() {
@@ -182,7 +193,8 @@ class _AboutScreenState extends State<AboutScreen> {
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: settingNotification,
+                      //todo onTap: _isLoggedIn ? settingNotification : () {},
+                      onTap: () {},
                       child: Container(
                         decoration: BoxDecoration(
                           border: BorderDirectional(

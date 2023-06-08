@@ -7,10 +7,10 @@ class PushInfoFields {
 class PushInfo {
   static String tableName = 'PushInfo';
   final int? id;
-  final String? userId;
-  final String? token;
+  String? userId;
+  String? token;
 
-  const PushInfo({
+  PushInfo({
     this.id,
     this.userId,
     this.token,

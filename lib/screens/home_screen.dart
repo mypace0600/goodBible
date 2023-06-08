@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:goodbible/models/bible_content_model.dart';
 import 'package:goodbible/screens/about_screen.dart';
@@ -27,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late String book;
   late int chapter;
   late SharedPreferences prefs;
+  User? _user;
+  final bool _isLoggedIn = false;
 
   late int textFontButtonClicked = 0;
 
@@ -82,6 +85,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  loginNotice() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("로그인이 필요합니다."),
+            content: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AboutScreen(),
+                  ),
+                );
+              },
+              child: const Text("로그인 하러 가기"),
+            ),
+          );
+        });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     chapter = widget.chapter;
     initPrefs();
     contentList = ApiService.getVerseListByBookAndChapter(book, chapter);
+    _user = FirebaseAuth.instance.currentUser;
   }
 
   textSizeChange() {
@@ -141,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              onPressed: savedTextList,
+              onPressed: _isLoggedIn ? savedTextList : loginNotice,
               icon: const Icon(Icons.bookmark),
             ),
             IconButton(
