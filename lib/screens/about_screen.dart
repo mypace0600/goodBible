@@ -65,8 +65,6 @@ class _AboutScreenState extends State<AboutScreen> {
       _user = FirebaseAuth.instance.currentUser;
       _isLoggedIn = true;
     });
-    print(_user);
-    print(_isLoggedIn);
   }
 
   @override
