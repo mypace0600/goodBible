@@ -7,6 +7,7 @@ import 'package:goodbible/screens/search_screen.dart';
 import 'package:goodbible/screens/search_text_screen.dart';
 import 'package:goodbible/services/api_service.dart';
 import 'package:goodbible/widgets/content_widget.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late int chapter;
   late SharedPreferences prefs;
   User? _user;
-  final bool _isLoggedIn = false;
+  bool _isLoggedIn = false;
 
   late int textFontButtonClicked = 0;
 
@@ -85,25 +86,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    setState(() {
+      _user = FirebaseAuth.instance.currentUser;
+      _isLoggedIn = true;
+    });
+    Navigator.pop(context);
+  }
+
   loginNotice() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("로그인이 필요합니다."),
-            content: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutScreen(),
-                  ),
-                );
-              },
-              child: const Text("로그인 하러 가기"),
-            ),
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("로그인이 필요합니다."),
+          content: TextButton(
+            onPressed: signInWithGoogle,
+            child: const Text("로그인 하러 가기"),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -114,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
     initPrefs();
     contentList = ApiService.getVerseListByBookAndChapter(book, chapter);
     _user = FirebaseAuth.instance.currentUser;
+    _isLoggedIn = _isLoggedIn;
   }
 
   textSizeChange() {
