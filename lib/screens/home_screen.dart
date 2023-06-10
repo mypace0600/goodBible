@@ -179,7 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              onPressed: _isLoggedIn ? savedTextList : loginNotice,
+              // Todo _isLoggedIn 처리하기
+              // onPressed: _isLoggedIn ? savedTextList : loginNotice,
+              onPressed: savedTextList,
               icon: const Icon(Icons.bookmark),
             ),
             IconButton(
