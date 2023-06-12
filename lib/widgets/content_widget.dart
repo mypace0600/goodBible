@@ -60,7 +60,9 @@ class _ContentWidgetState extends State<ContentWidget> {
             },
             child: Container(
               decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.transparent,
+                color: isSelected
+                    ? const Color.fromRGBO(224, 224, 224, 0.9)
+                    : Colors.transparent,
               ),
               child: Text(
                 ':${widget.verse} ${widget.text}',
