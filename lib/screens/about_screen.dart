@@ -124,7 +124,19 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About'),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        title: const Text(
+          'About',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),

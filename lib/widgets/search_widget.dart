@@ -25,11 +25,17 @@ class SearchWidget extends StatelessWidget {
           ),
         );
       },
-      child: Text(
-        book,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 3,
+          horizontal: 5,
+        ),
+        child: Text(
+          book,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );

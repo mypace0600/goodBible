@@ -18,7 +18,18 @@ class _SearchScreenState extends State<SearchScreen> {
     // 페이지의 내용을 구현하세요.
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Screen'),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        title: const Text(
+          '성경 주소 검색',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: FutureBuilder(
         future: searchList,

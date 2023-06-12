@@ -183,7 +183,19 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.fileName),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        title: Text(
+          widget.fileName,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         actions: [
           IconButton(
               onPressed: () {

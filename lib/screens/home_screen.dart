@@ -141,20 +141,29 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
         title: TextButton(
           onPressed: searchAddressAction,
           child: Text(
             '$book ${chapter + 1}장',
             style: const TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               fontSize: 25,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
         actions: [
           IconButton(
             onPressed: textSizeChange,
-            icon: const Icon(Icons.format_size),
+            icon: const Icon(
+              Icons.format_size,
+              color: Colors.black,
+            ),
           ),
         ],
       ),
@@ -174,15 +183,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 20,
+          horizontal: 0,
+        ),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          color: Colors.white,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             IconButton(
               // Todo _isLoggedIn 처리하기
               // onPressed: _isLoggedIn ? savedTextList : loginNotice,
               onPressed: savedTextList,
-              icon: const Icon(Icons.bookmark),
+              icon: const Icon(Icons.bookmark_outline),
             ),
             IconButton(
               onPressed: searchTextAction,

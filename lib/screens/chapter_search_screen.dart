@@ -34,7 +34,18 @@ class _ChapterSearchScreenState extends State<ChapterSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.book),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        title: Text(
+          widget.book,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -42,13 +53,24 @@ class _ChapterSearchScreenState extends State<ChapterSearchScreen> {
         ),
         itemBuilder: (context, index) {
           return OutlinedButton(
-              onPressed: () {
-                setState(() {
-                  selectedButtonIndex = index;
-                });
-                changePage(context, selectedButtonIndex, widget.book);
-              },
-              child: Text('${index + 1}'));
+            onPressed: () {
+              setState(() {
+                selectedButtonIndex = index;
+              });
+              changePage(context, selectedButtonIndex, widget.book);
+            },
+            style: ButtonStyle(
+                overlayColor: MaterialStateColor.resolveWith(
+                    (states) => const Color.fromRGBO(224, 224, 224, 1))),
+            child: Text(
+              '${index + 1}',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          );
         },
         itemCount: widget.chapter,
       ),

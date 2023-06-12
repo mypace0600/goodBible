@@ -39,6 +39,11 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
         title: null,
         flexibleSpace: SafeArea(
           child: Row(
@@ -46,9 +51,12 @@ class _SearchTextScreenState extends State<SearchTextScreen> {
               const SizedBox(width: 50),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: const Color.fromRGBO(224, 224, 224, 0.8),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Row(

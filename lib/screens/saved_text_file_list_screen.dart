@@ -81,7 +81,19 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved Text Files'),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        title: const Text(
+          'Saved Text Files',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -114,13 +126,17 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
                         },
                         child: Container(
                           margin: const EdgeInsets.all(8.0),
-                          color: Colors.blue,
+                          color: const Color.fromRGBO(224, 224, 224, 1),
                           height: 100,
                           width: 100,
                           child: Center(
                             child: Text(
                               snapshot.data![index].fileName!,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
