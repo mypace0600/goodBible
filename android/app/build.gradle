@@ -59,7 +59,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -79,7 +79,8 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
-            useProguard true
+            // useProguard true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -93,6 +94,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:32.1.0')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.android.material:material:<version>'
-
+   // implementation 'com.google.android.material:material:<version>'
+    implementation group: 'com.google.android.material', name: 'material', version: '1.1.0-alpha05'
 }
