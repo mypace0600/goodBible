@@ -257,7 +257,7 @@ class _SavedTextListScreenState extends State<SavedTextListScreen> {
             }
           }
           return const Center(
-            child: Text('No saved data.'),
+            child: Text('저장된 데이터가 없습니다.'),
           );
         },
       ),

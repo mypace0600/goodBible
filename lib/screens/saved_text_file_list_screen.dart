@@ -87,7 +87,7 @@ class _SavedTextFileListScreenState extends State<SavedTextFileListScreen> {
           color: Colors.black,
         ),
         title: const Text(
-          'Saved Text Files',
+          '저장 파일',
           style: TextStyle(
             color: Colors.black,
             fontSize: 25,

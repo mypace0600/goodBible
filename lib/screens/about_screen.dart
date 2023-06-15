@@ -81,7 +81,7 @@ class _AboutScreenState extends State<AboutScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Log out"),
+            title: const Text("로그아웃"),
             actions: [
               TextButton(
                   onPressed: () {
@@ -97,8 +97,8 @@ class _AboutScreenState extends State<AboutScreen> {
                       ),
                     );
                   },
-                  child: const Text("Yes")),
-              TextButton(onPressed: () {}, child: const Text("No")),
+                  child: const Text("네")),
+              TextButton(onPressed: () {}, child: const Text("아니오")),
             ],
           );
         });
@@ -130,7 +130,7 @@ class _AboutScreenState extends State<AboutScreen> {
           color: Colors.black,
         ),
         title: const Text(
-          'About',
+          '정보',
           style: TextStyle(
             color: Colors.black,
             fontSize: 25,
@@ -181,13 +181,13 @@ class _AboutScreenState extends State<AboutScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: _user != null
                             ? Text('${_user!.email}')
-                            : const Text('email'),
+                            : const Text('이메일'),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: _user != null
                             ? Text('${_user!.displayName}')
-                            : const Text('name'),
+                            : const Text('이름'),
                       ),
                     ],
                   ),
